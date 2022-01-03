@@ -28,6 +28,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+ADMINS = [
+    ('gimseung-gyu','kimseungkyubestiedu@gmail.com'),
+]
 
 # Application definition
 
@@ -41,7 +44,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #Thid Apps
     'debug_toolbar',
+    'bootstrap4',
+    'django_pydenticon',
     #Local Apps
+    'accounts',
+    'instagram',
+    'easy_thumbnails',
 ]   
 
 MIDDLEWARE = [
@@ -88,7 +96,7 @@ DATABASES = {
     }
 }
 
-
+AUTH_USER_MODEL = 'accounts.User'
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
@@ -107,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+LOGIN_REDIRECT_URL = '/'
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -137,3 +145,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+#EMAIL CONFIGURATION
+SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
+#SENDGRID_API_KEY = "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"
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey' # this is exactly the value 'apikey'
+EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+WELCOME_EMAIL_SENDER = "kimseungkyubestiedu@gmail.com"
