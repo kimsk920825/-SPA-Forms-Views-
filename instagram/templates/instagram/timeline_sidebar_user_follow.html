@@ -1,0 +1,11 @@
+<div class='d-flex mb-1'>
+    <div class='me-3'>
+        <img src="{{suggested_user.avatar_url}}" style="width: 32px; height 32px;" class="rounded-circle"/>
+    </div>
+    <div class=''>
+        {{suggested_user.username}}
+    </div>
+    <div class="ms-auto">
+        <a href="{% url 'user_follow' suggested_user.username %}">Follow</a>
+    </div>
+</div>

@@ -5,14 +5,15 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 from django_pydenticon.views import image as pydenticon_image
+from django.views.generic import RedirectView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
-    path('', login_required(TemplateView.as_view(template_name='root.html')), name='root'), 
+    path('', RedirectView.as_view(pattern_name='instagram:index'), name='root'), 
     path('identicon/image/<path:data>/', pydenticon_image, name='pydenticon_image'),
-    path('', include('instagram.urls')),
+    path('instagram/', include('instagram.urls')),
 ]
 
 if settings.DEBUG:
@@ -23,14 +24,3 @@ if settings.DEBUG:
 
     urlpatterns += static(settings.MEDIA_URL,
                     document_root=settings.MEDIA_ROOT)
-    
-"""
-if settings.DEBUG:
-    import debug_toolbar
-    urlpatterns += [
-        path('__debug__/', include(debug_toolbar.urls)),
-    ]
-
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
-"""

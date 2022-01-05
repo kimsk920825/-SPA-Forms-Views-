@@ -7,7 +7,8 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render, redirect
+from .models import User
 """
 로그인
 """
@@ -66,3 +67,24 @@ class PasswordChangeView(LoginRequiredMixin, AuthPasswordChangeView):
         messages.success(self.request, "암호를 변경했습니다.")
         return super().form_valid(form)
 password_change = PasswordChangeView.as_view()
+
+"""
+팔로우, 언팔로우 기능 구현
+"""
+@login_required
+def user_follow(request, username):
+    follow_user = get_object_or_404(User, username=username, is_active=True)
+    request.user.following_set.add(follow_user)
+    follow_user.follower_set.add(request.user)
+    messages.success(request, f"{follow_user}님을 팔로우했습니다.")
+    redirect_url = request.META.get("HTTP_REFERER", "root")
+    return redirect(redirect_url)
+
+@login_required
+def user_unfollow(request, username):
+    unfollow_user = get_object_or_404(User, username=username, is_active=True)
+    request.user.following_set.remove(unfollow_user)
+    unfollow_user.follower_set.remove(request.user)
+    messages.success(request, f"{unfollow_user}님을 언팔합니다.")
+    redirect_url = request.META.get("HTTP_REFERER", "root")
+    return redirect(redirect_url)
