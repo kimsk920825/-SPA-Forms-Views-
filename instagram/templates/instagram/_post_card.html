@@ -1,4 +1,4 @@
-{%load instagram_tags%}
+{%load bootstrap4 humanize instagram_tags%}
 
 <div class = "card">
     <div class="card-header">
@@ -10,14 +10,7 @@
 
     <div class="card-body">
         <img src="{{post.photo.url}}" style= "width : 100%;"/>
-        {% for tag in post.tag_set.all %}
-            <span class="badge bg-primary">
-                {{ tag.name }}
-            </span>
-        {% endfor %}    
-    </div>
-
-    <div class="card-footer">
+        <div>
         {% if post|is_like_user:user %}
             <a href="{% url 'instagram:post_unlike' post.pk %}" style="color: inherit;">
                 <i class="fas fa-heart-broken"></i>
@@ -27,5 +20,60 @@
                 <i class="fas fa-heart"></i>
             </a>
         {% endif %}
+        </div>
+        <div class="comment-list">
+            {% for comment in post.comment_set.all %}
+            <div class="comment">
+                <strong>{{ comment.author }}</strong>
+                        {{comment.message}}
+                <small class="text-muted">{{comment.created_at | naturaltime}}</small>
+            </div>
+            {% endfor %}
+        </div>
+        <div>
+        {% for tag in post.tag_set.all %}
+            <span class="badge bg-primary">
+                {{ tag.name }}
+            </span>
+        {% endfor %}   
+        </div> 
+        <div>
+            <a href="{{ post.get_absolute_url}}" style="" class="text-muted">
+                <small>
+                    {{post.created_at|naturaltime}}
+                </small>
+            </a>
+        </div>
+    </div>
+
+    <div class="card-footer">
+        <form id="post-{{ post.pk }}-comment-form" action="{% url "instagram:comment_new" post.pk %}" method="POST">
+            {% csrf_token %}
+            {% bootstrap_form comment_form %}
+            <input type="submit" value="댓글 쓰기" class="btn btn-primary btn-block" />
+        </form>
+        <script>
+            $(function() {
+                var form_id = "post-{{ post.pk }}-comment-form";
+                $("#" + form_id).submit(function(e) {
+                    e.preventDefault();
+    
+                    var options = {
+                        success: function(responseText, statusText, xhr, $form) {
+                            console.group("ajaxSubmit response");
+                            console.log(responseText);
+                            console.log(statusText);
+                            console.log(xhr);
+                            console.log($form);
+                            console.groupEnd();
+    
+                            $("#post-10-comment-list").prepend(responseText);
+                        }
+                    };
+                    $(this).ajaxSubmit(options);
+                });
+                console.log("document ready.");
+            });
+        </script>
     </div>
 </div>
