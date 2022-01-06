@@ -21,13 +21,9 @@
             </a>
         {% endif %}
         </div>
-        <div class="comment-list">
+        <div id="post-{{ post.pk }}-comment-list" class="comment-list mt-3 mb-3">
             {% for comment in post.comment_set.all %}
-            <div class="comment">
-                <strong>{{ comment.author }}</strong>
-                        {{comment.message}}
-                <small class="text-muted">{{comment.created_at | naturaltime}}</small>
-            </div>
+                {% include "instagram/_comment.html" %}
             {% endfor %}
         </div>
         <div>
@@ -67,8 +63,8 @@
                             console.log($form);
                             console.groupEnd();
     
-                            $("#post-10-comment-list").prepend(responseText);
-                        }
+                            $("#post-{{ post.pk }}-comment-list").prepend(responseText);
+                        } $("#post-10-comment-list").prepend(responseText);
                     };
                     $(this).ajaxSubmit(options);
                 });
